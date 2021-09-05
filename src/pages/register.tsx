@@ -9,10 +9,21 @@ import { Form, Formik } from "formik";
 import React from "react";
 import FieldInput from "../components/FieldInput";
 import Wrapper from "../components/Wrapper";
+import { useRegisterUserMutation } from "../generated/graphql";
+import { toErrorMap } from "../utils/toErrorMap";
+import { useRouter } from "next/dist/client/router";
+
 
 interface Props {}
 
 const Register = ({}: Props) => {
+  const router = useRouter();
+  const [{error, fetching, data}, registerUser] = useRegisterUserMutation();
+
+  if (error) {
+    console.log(error.graphQLErrors);
+  }
+
   return (
     <Wrapper>
       <Heading m={8} textAlign="center">
@@ -20,7 +31,15 @@ const Register = ({}: Props) => {
       </Heading>
       <Formik
         initialValues={{ username: "", password: "" }}
-        onSubmit={values => console.log(values)}
+        onSubmit={async (values, { setErrors }) => {
+          const response = await registerUser({ registerInput: values });
+          if (response.data?.register?.errors) {
+            const { errors } = response.data.register;
+            setErrors(toErrorMap(errors, values));
+          } else if (response.data?.register?.user) {
+            router.push('/');
+          }
+        }} 
       >
         {({ values, handleChange, isSubmitting }) => (
           <Form>
@@ -49,7 +68,7 @@ const Register = ({}: Props) => {
               _hover={{
                 backgroundColor: "teal.500",
               }}
-              isLoading={isSubmitting}
+              isLoading={isSubmitting || fetching}
             >
               Register
             </Button>

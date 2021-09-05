@@ -1,0 +1,12 @@
+mutation RegisterUser($registerInput: UsernamePasswordInput!) {
+  register(input: $registerInput) {
+    user {
+      id
+      username
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

@@ -1,8 +1,7 @@
 mutation LoginUser($loginInput: UsernamePasswordInput!) {
   login(input: $loginInput) {
     user {
-      username 
-      createdAt
+      ...CoreUserFields
     }
     errors {
       field

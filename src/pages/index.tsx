@@ -1,12 +1,22 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import Navbar from '../components/Navbar'
+import Navbar from "../components/Navbar";
+import { withUrqlClient } from "next-urql";
+import createUrqlClient from "../utils/urqlClient";
+import { useGetPostsQuery } from "../generated/graphql";
 
-export default function Home() {
+function Home() {
+  const [{ data }] = useGetPostsQuery();
+
   return (
     <div>
       <Navbar />
-      hello world
+      Hello world
+      {!data ? (
+        <div>loading...</div>
+      ) : (
+        data.posts.map(p => <div>{p.title}</div>)
+      )}
     </div>
   );
 }
+
+export default withUrqlClient(createUrqlClient(), { ssr: true })(Home);

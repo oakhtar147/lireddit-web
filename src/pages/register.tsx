@@ -12,13 +12,14 @@ import Wrapper from "../components/Wrapper";
 import { useRegisterUserMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/dist/client/router";
-
+import { withUrqlClient } from "next-urql";
+import createUrqlClient from "../utils/urqlClient";
 
 interface Props {}
 
 const Register = ({}: Props) => {
   const router = useRouter();
-  const [{error, fetching, data}, registerUser] = useRegisterUserMutation();
+  const [{ error, fetching, data }, registerUser] = useRegisterUserMutation();
 
   if (error) {
     console.log(error.graphQLErrors);
@@ -26,7 +27,7 @@ const Register = ({}: Props) => {
 
   return (
     <Wrapper>
-      <Heading m={8} textAlign="center">
+      <Heading m={8} textAlign='center'>
         Register
       </Heading>
       <Formik
@@ -37,34 +38,34 @@ const Register = ({}: Props) => {
             const { errors } = response.data.register;
             setErrors(toErrorMap(errors, values));
           } else if (response.data?.register?.user) {
-            router.push('/');
+            router.push("/");
           }
-        }} 
+        }}
       >
         {({ values, handleChange, isSubmitting }) => (
           <Form>
             <FieldInput
-              name="username"
-              placeholder="username"
-              label="Username"
+              name='username'
+              placeholder='username'
+              label='Username'
               value={values.username}
               onChange={handleChange}
             />
             <Box mt={4}>
               <FieldInput
-                name="password"
-                placeholder="password"
-                type="password"
-                label="Password"
+                name='password'
+                placeholder='password'
+                type='password'
+                label='Password'
                 value={values.password}
                 onChange={handleChange}
               />
             </Box>
             <Button
               mt={4}
-              type="submit"
-              color="white"
-              backgroundColor="teal"
+              type='submit'
+              color='white'
+              backgroundColor='teal'
               _hover={{
                 backgroundColor: "teal.500",
               }}
@@ -79,4 +80,4 @@ const Register = ({}: Props) => {
   );
 };
 
-export default Register;
+export default withUrqlClient(createUrqlClient())(Register);

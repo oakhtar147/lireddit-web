@@ -6,55 +6,58 @@ import Wrapper from "../components/Wrapper";
 import { useLoginUserMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/dist/client/router";
-
+import { withUrqlClient } from "next-urql";
+import createUrqlClient from "../utils/urqlClient";
 
 interface Props {}
 
 const Login = ({}: Props) => {
   const router = useRouter();
-  const [{error, fetching}, loginUser] = useLoginUserMutation();
+  const [{ error, fetching }, loginUser] = useLoginUserMutation();
 
   return (
     <Wrapper>
-      <Heading m={8} textAlign="center">
+      <Heading m={8} textAlign='center'>
         Login
       </Heading>
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await loginUser({ loginInput: values });
+          console.log(response.data);
           if (response.data?.login?.errors) {
             const { errors } = response.data.login;
             setErrors(toErrorMap(errors, values));
           } else if (response.data?.login?.user) {
-            router.push('/');
+            console.log("here");
+            router.push("/");
           }
-        }} 
+        }}
       >
         {({ values, handleChange, isSubmitting }) => (
           <Form>
             <FieldInput
-              name="username"
-              placeholder="username"
-              label="Username"
+              name='username'
+              placeholder='username'
+              label='Username'
               value={values.username}
               onChange={handleChange}
             />
             <Box mt={4}>
               <FieldInput
-                name="password"
-                placeholder="password"
-                type="password"
-                label="Password"
+                name='password'
+                placeholder='password'
+                type='password'
+                label='Password'
                 value={values.password}
                 onChange={handleChange}
               />
             </Box>
             <Button
               mt={4}
-              type="submit"
-              color="white"
-              backgroundColor="teal"
+              type='submit'
+              color='white'
+              backgroundColor='teal'
               _hover={{
                 backgroundColor: "teal.500",
               }}
@@ -69,4 +72,4 @@ const Login = ({}: Props) => {
   );
 };
 
-export default Login;
+export default withUrqlClient(createUrqlClient())(Login);

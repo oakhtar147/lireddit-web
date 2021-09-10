@@ -1,4 +1,4 @@
-mutation LoginUser($loginInput: UsernamePasswordInput!) {
+mutation LoginUser($loginInput: LoginInput!) {
   login(input: $loginInput) {
     user {
       ...CoreUserFields

@@ -31,7 +31,7 @@ const Register = ({}: Props) => {
         Register
       </Heading>
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await registerUser({ registerInput: values });
           if (response.data?.register?.errors) {
@@ -45,12 +45,21 @@ const Register = ({}: Props) => {
         {({ values, handleChange, isSubmitting }) => (
           <Form>
             <FieldInput
-              name='username'
-              placeholder='username'
-              label='Username'
-              value={values.username}
+              name='email'
+              placeholder='email'
+              label='Email'
+              value={values.email}
               onChange={handleChange}
             />
+            <Box mt={4}>
+              <FieldInput
+                name='username'
+                placeholder='username'
+                label='Username'
+                value={values.username}
+                onChange={handleChange}
+              />
+            </Box>
             <Box mt={4}>
               <FieldInput
                 name='password'
@@ -80,4 +89,4 @@ const Register = ({}: Props) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient())(Register);
+export default withUrqlClient(createUrqlClient)(Register);

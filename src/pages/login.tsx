@@ -13,7 +13,7 @@ interface Props {}
 
 const Login = ({}: Props) => {
   const router = useRouter();
-  const [{ error, fetching }, loginUser] = useLoginUserMutation();
+  const [{ fetching, data }, loginUser] = useLoginUserMutation();
 
   return (
     <Wrapper>
@@ -24,13 +24,11 @@ const Login = ({}: Props) => {
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await loginUser({ loginInput: values });
-          console.log(response.data);
           if (response.data?.login?.errors) {
             const { errors } = response.data.login;
             setErrors(toErrorMap(errors, values));
           } else if (response.data?.login?.user) {
-            console.log("here");
-            router.push("/");
+            router.replace("/");
           }
         }}
       >
@@ -72,4 +70,4 @@ const Login = ({}: Props) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient())(Login);
+export default withUrqlClient(createUrqlClient)(Login);

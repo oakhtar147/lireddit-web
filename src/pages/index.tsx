@@ -7,7 +7,7 @@ function Home() {
   const [{ data }] = useGetPostsQuery();
 
   return (
-    <div>
+    <>
       <Navbar />
       Hello world
       {!data ? (
@@ -15,8 +15,8 @@ function Home() {
       ) : (
         data.posts.map(p => <div>{p.title}</div>)
       )}
-    </div>
+    </>
   );
 }
 
-export default withUrqlClient(createUrqlClient(), { ssr: true })(Home);
+export default withUrqlClient(createUrqlClient, { ssr: true })(Home);

@@ -1,0 +1,4 @@
+fragment CoreErrorFields on FieldError {
+  field
+  message
+}

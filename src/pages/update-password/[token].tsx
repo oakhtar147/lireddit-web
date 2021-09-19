@@ -30,7 +30,7 @@ const successToast: UseToastOptions = {
   ...toastOptions,
 };
 
-const ChangePassword: NextPage<{ token: string }> = ({ token }: Props) => {
+const UpdatePassowrd: NextPage<{ token: string }> = ({ token }: Props) => {
   const [{ fetching, data }, updatePassword] = useUpdatePasswordMutation();
   const router = useRouter();
   const [success, setSuccess] = useState(false);
@@ -59,7 +59,7 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }: Props) => {
                 toErrorMap(response.data.updatePassword.errors, values)
               );
             } else if (response.data?.updatePassword.user) {
-              setSuccess(true);
+              router.push("/");
             }
           }}
         >
@@ -80,7 +80,6 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }: Props) => {
                 _hover={{
                   backgroundColor: "teal.500",
                 }}
-                onClick={() => success && toast(successToast)}
                 isLoading={isSubmitting || fetching}
                 isDisabled={!!data?.updatePassword.user}
               >
@@ -102,4 +101,4 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   };
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(ChangePassword);
+export default withUrqlClient(createUrqlClient, { ssr: false })(UpdatePassowrd);

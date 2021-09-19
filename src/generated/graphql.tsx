@@ -119,10 +119,24 @@ export type UserResponse = {
   user?: Maybe<User>;
 };
 
+export type CoreErrorFieldsFragment = {
+  __typename?: "FieldError";
+  field: string;
+  message: string;
+};
+
 export type CoreUserFieldsFragment = {
   __typename?: "User";
   id: number;
   username: string;
+};
+
+export type RegularUserResponseFragment = {
+  __typename?: "UserResponse";
+  errors?: Maybe<
+    Array<{ __typename?: "FieldError"; field: string; message: string }>
+  >;
+  user?: Maybe<{ __typename?: "User"; id: number; username: string }>;
 };
 
 export type ForgotPasswordMutationVariables = Exact<{
@@ -142,10 +156,10 @@ export type LoginUserMutation = {
   __typename?: "Mutation";
   login?: Maybe<{
     __typename?: "UserResponse";
-    user?: Maybe<{ __typename?: "User"; id: number; username: string }>;
     errors?: Maybe<
       Array<{ __typename?: "FieldError"; field: string; message: string }>
     >;
+    user?: Maybe<{ __typename?: "User"; id: number; username: string }>;
   }>;
 };
 
@@ -161,10 +175,10 @@ export type RegisterUserMutation = {
   __typename?: "Mutation";
   register?: Maybe<{
     __typename?: "UserResponse";
-    user?: Maybe<{ __typename?: "User"; id: number; username: string }>;
     errors?: Maybe<
       Array<{ __typename?: "FieldError"; field: string; message: string }>
     >;
+    user?: Maybe<{ __typename?: "User"; id: number; username: string }>;
   }>;
 };
 
@@ -176,15 +190,10 @@ export type UpdatePasswordMutation = {
   __typename?: "Mutation";
   updatePassword: {
     __typename?: "UserResponse";
-    user?: Maybe<{
-      __typename?: "User";
-      id: number;
-      email: string;
-      username: string;
-    }>;
     errors?: Maybe<
       Array<{ __typename?: "FieldError"; field: string; message: string }>
     >;
+    user?: Maybe<{ __typename?: "User"; id: number; username: string }>;
   };
 };
 
@@ -202,11 +211,29 @@ export type GetPostsQuery = {
   posts: Array<{ __typename?: "Post"; title: string; id: number }>;
 };
 
+export const CoreErrorFieldsFragmentDoc = gql`
+  fragment CoreErrorFields on FieldError {
+    field
+    message
+  }
+`;
 export const CoreUserFieldsFragmentDoc = gql`
   fragment CoreUserFields on User {
     id
     username
   }
+`;
+export const RegularUserResponseFragmentDoc = gql`
+  fragment RegularUserResponse on UserResponse {
+    errors {
+      ...CoreErrorFields
+    }
+    user {
+      ...CoreUserFields
+    }
+  }
+  ${CoreErrorFieldsFragmentDoc}
+  ${CoreUserFieldsFragmentDoc}
 `;
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($email: String!) {
@@ -223,16 +250,10 @@ export function useForgotPasswordMutation() {
 export const LoginUserDocument = gql`
   mutation LoginUser($loginInput: LoginInput!) {
     login(input: $loginInput) {
-      user {
-        ...CoreUserFields
-      }
-      errors {
-        field
-        message
-      }
+      ...RegularUserResponse
     }
   }
-  ${CoreUserFieldsFragmentDoc}
+  ${RegularUserResponseFragmentDoc}
 `;
 
 export function useLoginUserMutation() {
@@ -254,16 +275,10 @@ export function useLogoutMutation() {
 export const RegisterUserDocument = gql`
   mutation RegisterUser($registerInput: RegisterInput!) {
     register(input: $registerInput) {
-      user {
-        ...CoreUserFields
-      }
-      errors {
-        field
-        message
-      }
+      ...RegularUserResponse
     }
   }
-  ${CoreUserFieldsFragmentDoc}
+  ${RegularUserResponseFragmentDoc}
 `;
 
 export function useRegisterUserMutation() {
@@ -274,17 +289,10 @@ export function useRegisterUserMutation() {
 export const UpdatePasswordDocument = gql`
   mutation UpdatePassword($options: ResetPasswordInput!) {
     updatePassword(options: $options) {
-      user {
-        id
-        email
-        username
-      }
-      errors {
-        field
-        message
-      }
+      ...RegularUserResponse
     }
   }
+  ${RegularUserResponseFragmentDoc}
 `;
 
 export function useUpdatePasswordMutation() {

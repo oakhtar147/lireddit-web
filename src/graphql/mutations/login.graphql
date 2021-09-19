@@ -1,11 +1,5 @@
 mutation LoginUser($loginInput: LoginInput!) {
   login(input: $loginInput) {
-    user {
-      ...CoreUserFields
-    }
-    errors {
-      field
-      message
-    }
+    ...RegularUserResponse
   }
 }

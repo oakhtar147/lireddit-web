@@ -1,4 +1,4 @@
-import { Box, Button, Heading } from "@chakra-ui/react";
+import { Box, Button, Heading, Link, Flex } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React from "react";
 import FieldInput from "../components/FieldInput";
@@ -8,6 +8,7 @@ import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/dist/client/router";
 import { withUrqlClient } from "next-urql";
 import createUrqlClient from "../utils/urqlClient";
+import NextLink from "next/link";
 
 interface Props {}
 
@@ -51,18 +52,30 @@ const Login = ({}: Props) => {
                 onChange={handleChange}
               />
             </Box>
-            <Button
-              mt={4}
-              type='submit'
-              color='white'
-              backgroundColor='teal'
-              _hover={{
-                backgroundColor: "teal.500",
-              }}
-              isLoading={isSubmitting || fetching}
-            >
-              Login
-            </Button>
+            <Flex justifyContent='space-between'>
+              <Button
+                mt={4}
+                type='submit'
+                color='white'
+                backgroundColor='teal'
+                _hover={{
+                  backgroundColor: "teal.500",
+                }}
+                isLoading={isSubmitting || fetching}
+              >
+                Login
+              </Button>
+              <NextLink href='forgot-password'>
+                <Link
+                  mt={2}
+                  color='blue.500'
+                  textDecoration='underline'
+                  alignSelf='center'
+                >
+                  Forgot Password?
+                </Link>
+              </NextLink>
+            </Flex>
           </Form>
         )}
       </Formik>
